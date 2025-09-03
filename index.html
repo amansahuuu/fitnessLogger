@@ -4,128 +4,473 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Training Log</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    
-    /* Custom minimal styles */
-    .input { 
-      @apply w-full px-4 py-3 bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:outline-none transition-colors text-base;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    .btn { 
-      @apply px-6 py-3 font-medium transition-all active:scale-95 text-base touch-manipulation;
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
     }
-    .btn-primary { 
-      @apply btn bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-700;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.5;
+      color: #1f1f1f;
+      background: #f8f9fa;
     }
-    .btn-secondary { 
-      @apply btn bg-gray-100 text-gray-700 hover:bg-gray-200 focus:bg-gray-200;
+
+    /* Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .btn-danger { 
-      @apply btn bg-red-600 text-white hover:bg-red-700 focus:bg-red-700;
-    }
-    
-    /* Remove all rounded corners for ADHD-friendly design */
-    .input, .btn, .card, .modal { border-radius: 0 !important; }
-    
-    .card { 
-      @apply bg-white border border-gray-200 p-4 sm:p-6;
-    }
-    
-    /* Modal styles */
-    .modal-overlay {
-      @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4;
-    }
-    .modal {
-      @apply bg-white p-6 w-full max-w-sm border border-gray-300;
-    }
-    
-    /* Exercise grid for mobile */
-    .exercise-grid {
+
+    .grid {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      align-items: start;
+      gap: 1rem;
     }
-    
+
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
     @media (min-width: 640px) {
-      .exercise-grid {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Header */
+    .header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .auth-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      padding: 1.5rem;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      touch-action: manipulation;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* Stats */
+    .stats {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1.5rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #3b82f6;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+
+    .stat-green .stat-number { color: #10b981; }
+    .stat-orange .stat-number { color: #f59e0b; }
+
+    /* Exercise Grid */
+    .exercise-row {
+      display: grid;
+      gap: 0.5rem;
+      align-items: end;
+      margin-bottom: 0.75rem;
+    }
+
+    .exercise-row {
+      grid-template-columns: 1fr auto;
+    }
+
+    @media (min-width: 640px) {
+      .exercise-row {
         grid-template-columns: 2fr 1fr 1fr 1fr auto;
       }
     }
-    
-    /* Hide desktop labels on mobile, show mobile labels */
-    .mobile-label { @apply sm:hidden text-xs text-gray-600 mb-1; }
-    .desktop-label { @apply hidden sm:block text-sm text-gray-700 mb-2 font-medium; }
-    
-    /* Focus indicators */
-    .focus-ring { @apply focus:ring-2 focus:ring-blue-500 focus:ring-offset-1; }
+
+    .exercise-labels {
+      display: none;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    @media (min-width: 640px) {
+      .exercise-labels {
+        display: grid;
+      }
+      .mobile-label {
+        display: none;
+      }
+    }
+
+    .mobile-label {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+    }
+
+    .exercise-sets {
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .exercise-sets {
+        display: block;
+      }
+    }
+
+    /* Intensity Slider */
+    .intensity-container {
+      position: relative;
+    }
+
+    .intensity-slider {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 8px;
+      background: #e5e7eb;
+      outline: none;
+    }
+
+    .intensity-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #3b82f6;
+      cursor: pointer;
+    }
+
+    .intensity-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+
+    .intensity-value {
+      font-weight: 600;
+      color: #3b82f6;
+    }
+
+    /* Workout List */
+    .workout-item {
+      border: 1px solid #e5e7eb;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .workout-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 0.5rem;
+    }
+
+    .workout-title {
+      font-weight: 600;
+    }
+
+    .workout-date {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .workout-exercises {
+      font-size: 0.875rem;
+      color: #4b5563;
+      margin-bottom: 0.5rem;
+    }
+
+    .workout-meta {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+    }
+
+    .workout-notes {
+      font-size: 0.875rem;
+      font-style: italic;
+      color: #6b7280;
+    }
+
+    .workout-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal {
+      background: white;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #d1d5db;
+    }
+
+    .modal-content {
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    /* Auth */
+    .auth-card {
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+
+    .auth-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-divider {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 1rem 0;
+    }
+
+    /* Utilities */
+    .hidden { display: none; }
+    .text-center { text-align: center; }
+    .text-small { font-size: 0.875rem; }
+    .text-muted { color: #6b7280; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .p-4 { padding: 1rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .flex { display: flex; }
+    .flex-1 { flex: 1; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      color: #6b7280;
+      padding: 3rem 1rem;
+    }
+
+    .empty-state-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-900 min-h-screen">
+<body>
   
   <!-- Custom Modal -->
   <div id="customModal" class="modal-overlay hidden">
     <div class="modal">
-      <div id="modalContent" class="mb-4"></div>
-      <div class="flex gap-2 justify-end">
-        <button id="modalCancel" class="btn-secondary">Cancel</button>
-        <button id="modalConfirm" class="btn-primary">Confirm</button>
+      <div id="modalContent" class="modal-content"></div>
+      <div class="modal-actions">
+        <button id="modalCancel" class="btn btn-secondary">Cancel</button>
+        <button id="modalConfirm" class="btn btn-primary">Confirm</button>
       </div>
     </div>
   </div>
 
-  <div class="max-w-4xl mx-auto">
+  <div class="container">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 p-4 sm:p-6 sticky top-0 z-10">
-      <div class="flex items-center justify-between">
-        <h1 class="text-xl sm:text-2xl font-bold">Training Log</h1>
-        <div id="authArea" class="flex items-center gap-3"></div>
+    <header class="header">
+      <div class="header-content">
+        <h1>Training Log</h1>
+        <div id="authArea" class="auth-area"></div>
       </div>
     </header>
 
     <!-- Auth Section -->
-    <section id="authCard" class="p-4 sm:p-6"></section>
+    <section id="authCard" class="p-4"></section>
 
     <!-- Main App -->
     <section id="app" class="hidden">
       
       <!-- Quick Stats -->
-      <div class="bg-white border-b border-gray-200 p-4 sm:p-6">
-        <div class="grid grid-cols-3 gap-4 text-center">
+      <div class="stats">
+        <div class="stats-grid">
           <div>
-            <div id="totalWorkouts" class="text-2xl font-bold text-blue-600">0</div>
-            <div class="text-xs text-gray-600">Total</div>
+            <div id="totalWorkouts" class="stat-number">0</div>
+            <div class="stat-label">Total</div>
           </div>
-          <div>
-            <div id="thisWeek" class="text-2xl font-bold text-green-600">0</div>
-            <div class="text-xs text-gray-600">This Week</div>
+          <div class="stat-green">
+            <div id="thisWeek" class="stat-number">0</div>
+            <div class="stat-label">This Week</div>
           </div>
-          <div>
-            <div id="streak" class="text-2xl font-bold text-orange-600">0</div>
-            <div class="text-xs text-gray-600">Day Streak</div>
+          <div class="stat-orange">
+            <div id="streak" class="stat-number">0</div>
+            <div class="stat-label">Day Streak</div>
           </div>
         </div>
       </div>
 
-      <!-- Quick Add -->
-      <div class="p-4 sm:p-6">
+      <!-- Form Section -->
+      <div class="p-4">
         <div class="card">
-          <h2 class="text-lg font-semibold mb-4">
-            <span id="formTitle">Log Workout</span>
-          </h2>
+          <h2 id="formTitle" class="mb-4">Log Workout</h2>
           
-          <form id="logForm" class="space-y-4">
-            <!-- Date & Focus Row -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="desktop-label">Date</label>
-                <input type="date" id="date" class="input focus-ring" required />
+          <form id="logForm">
+            <!-- Date & Focus -->
+            <div class="grid grid-2 mb-3">
+              <div class="form-group">
+                <label class="label">Date</label>
+                <input type="date" id="date" class="input" required />
               </div>
-              <div>
-                <label class="desktop-label">Type</label>
-                <select id="focus" class="input focus-ring">
+              <div class="form-group">
+                <label class="label">Type</label>
+                <select id="focus" class="select">
                   <option>Push</option>
                   <option>Pull</option>
                   <option>Legs</option>
@@ -140,59 +485,60 @@
             </div>
 
             <!-- Exercises -->
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <label class="text-sm font-medium text-gray-700">Exercises</label>
-                <button type="button" id="addExercise" class="btn-secondary text-sm">+ Add</button>
+            <div class="form-group">
+              <div class="flex items-center justify-between mb-2">
+                <label class="label">Exercises</label>
+                <button type="button" id="addExercise" class="btn btn-secondary btn-small">+ Add</button>
               </div>
               
-              <!-- Exercise Headers (Desktop only) -->
-              <div class="hidden sm:grid exercise-grid mb-2">
-                <div class="desktop-label">Exercise</div>
-                <div class="desktop-label text-center">Set 1</div>
-                <div class="desktop-label text-center">Set 2</div>
-                <div class="desktop-label text-center">Set 3</div>
+              <div class="exercise-labels">
+                <div>Exercise</div>
+                <div class="text-center">Set 1</div>
+                <div class="text-center">Set 2</div>
+                <div class="text-center">Set 3</div>
                 <div></div>
               </div>
               
-              <div id="exercises" class="space-y-3"></div>
+              <div id="exercises"></div>
             </div>
 
             <!-- Duration & Intensity -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="desktop-label">Duration (mins)</label>
-                <input type="number" id="duration" class="input focus-ring" min="1" max="300" placeholder="60" />
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label class="label">Duration (mins)</label>
+                <input type="number" id="duration" class="input" min="1" max="300" placeholder="60" />
               </div>
-              <div>
-                <label class="desktop-label">Intensity (1-10)</label>
-                <input type="range" id="intensity" class="w-full" min="1" max="10" value="5" />
-                <div class="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>Easy</span>
-                  <span id="intensityValue">5</span>
-                  <span>Beast</span>
+              <div class="form-group">
+                <label class="label">Intensity (1-10)</label>
+                <div class="intensity-container">
+                  <input type="range" id="intensity" class="intensity-slider" min="1" max="10" value="5" />
+                  <div class="intensity-labels">
+                    <span>Easy</span>
+                    <span id="intensityValue" class="intensity-value">5</span>
+                    <span>Beast</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Notes -->
-            <div>
-              <label class="desktop-label">Notes</label>
-              <textarea id="notes" class="input focus-ring" rows="3" placeholder="How did it feel? PRs? Form notes..."></textarea>
+            <div class="form-group">
+              <label class="label">Notes</label>
+              <textarea id="notes" class="textarea" placeholder="How did it feel? PRs? Form notes..."></textarea>
             </div>
 
             <!-- Photo -->
-            <div>
-              <label class="desktop-label">Photo</label>
-              <input type="file" id="photo" accept="image/*" class="input focus-ring" />
+            <div class="form-group">
+              <label class="label">Photo</label>
+              <input type="file" id="photo" accept="image/*" class="input" />
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex gap-3 pt-2">
-              <button class="btn-primary flex-1" id="saveBtn" type="submit">
+            <div class="flex gap-3">
+              <button class="btn btn-primary flex-1" id="saveBtn" type="submit">
                 <span id="saveBtnText">Save Workout</span>
               </button>
-              <button class="btn-secondary" id="resetBtn" type="button">Reset</button>
+              <button class="btn btn-secondary" id="resetBtn" type="button">Reset</button>
             </div>
             
             <input type="hidden" id="editingId" />
@@ -201,19 +547,17 @@
       </div>
 
       <!-- History Section -->
-      <div class="p-4 sm:p-6 pt-0">
+      <div class="p-4">
         <div class="card">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold">Recent Workouts</h2>
-            <div class="flex gap-2">
-              <button id="exportBtn" class="btn-secondary text-sm">Export</button>
-            </div>
+            <h2>Recent Workouts</h2>
+            <button id="exportBtn" class="btn btn-secondary btn-small">Export</button>
           </div>
           
           <!-- Search & Filter -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            <input id="search" class="input focus-ring" placeholder="Search workouts..." />
-            <select id="sort" class="input focus-ring">
+          <div class="grid grid-2 mb-4">
+            <input id="search" class="input" placeholder="Search workouts..." />
+            <select id="sort" class="select">
               <option value="date_desc">Newest First</option>
               <option value="date_asc">Oldest First</option>
               <option value="intensity_desc">Hardest First</option>
@@ -221,7 +565,7 @@
             </select>
           </div>
           
-          <div id="logList" class="space-y-3"></div>
+          <div id="logList"></div>
         </div>
       </div>
     </section>
@@ -234,14 +578,14 @@
     import { getFirestore, doc, collection, addDoc, getDocs, updateDoc, deleteDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
     import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
 
-    // Firebase config - ADD YOURS HERE
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyD2FLeJPjMqcBZ7fX4YK7fCEDb8rZI08v0",
       authDomain: "traininglogger-a8f5a.firebaseapp.com",
       projectId: "traininglogger-a8f5a",
       storageBucket: "traininglogger-a8f5a.firebasestorage.app",
       messagingSenderId: "652521948687",
-      appId: "1:652521948687:web:7ad9e35ed03a0f5a62057a62057a",
+      appId: "1:652521948687:web:7ad9e35ed03a0f5a62057a",
       measurementId: "G-3RX9Y530PQ"
     };
 
@@ -253,75 +597,75 @@
     enableIndexedDbPersistence(db).catch(() => {});
 
     // UI Elements
-    const authArea = document.getElementById('authArea');
-    const authCard = document.getElementById('authCard');
-    const appSection = document.getElementById('app');
-    const logForm = document.getElementById('logForm');
-    const exercisesEl = document.getElementById('exercises');
-    const intensityEl = document.getElementById('intensity');
-    const intensityValue = document.getElementById('intensityValue');
-    const logList = document.getElementById('logList');
-    
-    // Modal elements
-    const modal = document.getElementById('customModal');
-    const modalContent = document.getElementById('modalContent');
-    const modalCancel = document.getElementById('modalCancel');
-    const modalConfirm = document.getElementById('modalConfirm');
+    const elements = {
+      authArea: document.getElementById('authArea'),
+      authCard: document.getElementById('authCard'),
+      app: document.getElementById('app'),
+      logForm: document.getElementById('logForm'),
+      exercises: document.getElementById('exercises'),
+      intensity: document.getElementById('intensity'),
+      intensityValue: document.getElementById('intensityValue'),
+      logList: document.getElementById('logList'),
+      modal: document.getElementById('customModal'),
+      modalContent: document.getElementById('modalContent'),
+      modalCancel: document.getElementById('modalCancel'),
+      modalConfirm: document.getElementById('modalConfirm')
+    };
 
     // Set today's date
     document.getElementById('date').value = new Date().toISOString().slice(0,10);
     
     // Intensity slider
-    intensityEl.addEventListener('input', () => {
-      intensityValue.textContent = intensityEl.value;
+    elements.intensity.addEventListener('input', () => {
+      elements.intensityValue.textContent = elements.intensity.value;
     });
 
-    // Custom Modal Functions
+    // Modal functions
     function showModal(message, onConfirm) {
-      modalContent.textContent = message;
-      modal.classList.remove('hidden');
+      elements.modalContent.textContent = message;
+      elements.modal.classList.remove('hidden');
       
-      modalCancel.onclick = () => modal.classList.add('hidden');
-      modalConfirm.onclick = () => {
-        modal.classList.add('hidden');
+      elements.modalCancel.onclick = () => elements.modal.classList.add('hidden');
+      elements.modalConfirm.onclick = () => {
+        elements.modal.classList.add('hidden');
         onConfirm();
       };
     }
 
     function showAlert(message) {
-      modalContent.textContent = message;
-      modalConfirm.textContent = 'OK';
-      modalCancel.style.display = 'none';
-      modal.classList.remove('hidden');
+      elements.modalContent.textContent = message;
+      elements.modalConfirm.textContent = 'OK';
+      elements.modalCancel.style.display = 'none';
+      elements.modal.classList.remove('hidden');
       
-      modalConfirm.onclick = () => {
-        modal.classList.add('hidden');
-        modalCancel.style.display = 'block';
-        modalConfirm.textContent = 'Confirm';
+      elements.modalConfirm.onclick = () => {
+        elements.modal.classList.add('hidden');
+        elements.modalCancel.style.display = 'block';
+        elements.modalConfirm.textContent = 'Confirm';
       };
     }
 
-    // Exercise Row Component
+    // Exercise row
     function createExerciseRow(data = {}) {
       const div = document.createElement('div');
-      div.className = 'exercise-grid';
+      div.className = 'exercise-row';
       
       div.innerHTML = `
         <div>
           <div class="mobile-label">Exercise</div>
-          <input class="input focus-ring" placeholder="e.g. Push-ups, Squats" value="${data.name||''}" />
+          <input class="input" placeholder="e.g. Push-ups, Squats" value="${data.name||''}" />
         </div>
         <div>
           <div class="mobile-label">Set 1</div>
-          <input class="input focus-ring text-center" type="number" min="0" placeholder="0" value="${data.s1||''}" />
+          <input class="input" type="number" min="0" placeholder="0" value="${data.s1||''}" style="text-align: center;" />
         </div>
-        <div class="hidden sm:block">
-          <input class="input focus-ring text-center" type="number" min="0" placeholder="0" value="${data.s2||''}" />
+        <div class="exercise-sets">
+          <input class="input" type="number" min="0" placeholder="0" value="${data.s2||''}" style="text-align: center;" />
         </div>
-        <div class="hidden sm:block">
-          <input class="input focus-ring text-center" type="number" min="0" placeholder="0" value="${data.s3||''}" />
+        <div class="exercise-sets">
+          <input class="input" type="number" min="0" placeholder="0" value="${data.s3||''}" style="text-align: center;" />
         </div>
-        <button type="button" class="remove btn-secondary px-3">×</button>
+        <button type="button" class="remove btn btn-secondary px-3">×</button>
       `;
       
       div.querySelector('.remove').onclick = () => div.remove();
@@ -329,46 +673,52 @@
     }
 
     document.getElementById('addExercise').onclick = () => {
-      exercisesEl.appendChild(createExerciseRow());
+      elements.exercises.appendChild(createExerciseRow());
     };
 
     // Add initial exercise row
-    exercisesEl.appendChild(createExerciseRow());
+    elements.exercises.appendChild(createExerciseRow());
 
     // Auth UI
     function renderAuth(user) {
       if (user) {
-        authArea.innerHTML = `
-          <span class="text-sm text-gray-600">${user.email}</span>
-          <button id="logoutBtn" class="btn-secondary text-sm">Logout</button>
+        elements.authArea.innerHTML = `
+          <span class="text-small text-muted">${user.email}</span>
+          <button id="logoutBtn" class="btn btn-secondary btn-small">Logout</button>
         `;
         document.getElementById('logoutBtn').onclick = () => signOut(auth);
-        authCard.classList.add('hidden');
-        appSection.classList.remove('hidden');
+        elements.authCard.classList.add('hidden');
+        elements.app.classList.remove('hidden');
         loadLogs();
       } else {
-        authCard.innerHTML = `
-          <div class="card max-w-md mx-auto">
-            <h2 class="text-xl font-bold mb-6 text-center">Welcome Back</h2>
-            <div class="space-y-4">
-              <form id="loginForm" class="space-y-3">
-                <input class="input focus-ring" id="loginEmail" type="email" placeholder="Email" required>
-                <input class="input focus-ring" id="loginPass" type="password" placeholder="Password" required>
-                <button class="btn-primary w-full">Login</button>
-              </form>
-              <button id="googleBtn" class="btn-secondary w-full">Continue with Google</button>
-              <hr class="border-gray-200">
-              <form id="signupForm" class="space-y-3">
-                <input class="input focus-ring" id="signupEmail" type="email" placeholder="Email for new account" required>
-                <input class="input focus-ring" id="signupPass" type="password" placeholder="Password (6+ chars)" required>
-                <button class="btn-primary w-full">Create Account</button>
-              </form>
-            </div>
+        elements.authCard.innerHTML = `
+          <div class="auth-card card">
+            <h2 class="auth-title">Welcome Back</h2>
+            <form id="loginForm" class="mb-4">
+              <div class="form-group">
+                <input class="input" id="loginEmail" type="email" placeholder="Email" required>
+              </div>
+              <div class="form-group">
+                <input class="input" id="loginPass" type="password" placeholder="Password" required>
+              </div>
+              <button class="btn btn-primary btn-full">Login</button>
+            </form>
+            <button id="googleBtn" class="btn btn-secondary btn-full mb-4">Continue with Google</button>
+            <hr class="auth-divider">
+            <form id="signupForm">
+              <div class="form-group">
+                <input class="input" id="signupEmail" type="email" placeholder="Email for new account" required>
+              </div>
+              <div class="form-group">
+                <input class="input" id="signupPass" type="password" placeholder="Password (6+ chars)" required>
+              </div>
+              <button class="btn btn-primary btn-full">Create Account</button>
+            </form>
           </div>
         `;
         
-        authCard.classList.remove('hidden');
-        appSection.classList.add('hidden');
+        elements.authCard.classList.remove('hidden');
+        elements.app.classList.add('hidden');
         
         // Auth handlers
         document.getElementById('loginForm').onsubmit = async (e) => {
@@ -406,12 +756,12 @@
     onAuthStateChanged(auth, renderAuth);
 
     // Form handling
-    logForm.addEventListener('submit', async (e) => {
+    elements.logForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const user = auth.currentUser;
       if (!user) return;
 
-      const exercises = Array.from(exercisesEl.children).map(row => {
+      const exercises = Array.from(elements.exercises.children).map(row => {
         const inputs = row.querySelectorAll('input');
         return {
           name: inputs[0].value.trim(),
@@ -426,7 +776,7 @@
         focus: document.getElementById('focus').value,
         exercises,
         duration: +document.getElementById('duration').value || 0,
-        intensity: +intensityEl.value,
+        intensity: +elements.intensity.value,
         notes: document.getElementById('notes').value.trim(),
         createdAt: Date.now()
       };
@@ -441,12 +791,6 @@
           await addDoc(logsCollection, workout);
         }
         
-        // Handle photo upload if present
-        const file = document.getElementById('photo').files?.[0];
-        if (file) {
-          // Photo upload logic here
-        }
-        
         resetForm();
         loadLogs();
         showAlert('Workout saved!');
@@ -456,30 +800,43 @@
     });
 
     function resetForm() {
-      logForm.reset();
+      elements.logForm.reset();
       document.getElementById('date').value = new Date().toISOString().slice(0,10);
       document.getElementById('editingId').value = '';
       document.getElementById('formTitle').textContent = 'Log Workout';
       document.getElementById('saveBtnText').textContent = 'Save Workout';
-      intensityEl.value = 5;
-      intensityValue.textContent = '5';
-      exercisesEl.innerHTML = '';
-      exercisesEl.appendChild(createExerciseRow());
+      elements.intensity.value = 5;
+      elements.intensityValue.textContent = '5';
+      elements.exercises.innerHTML = '';
+      elements.exercises.appendChild(createExerciseRow());
     }
 
     document.getElementById('resetBtn').onclick = resetForm;
 
-    // Load and display workouts
+    // Load workouts
     async function loadLogs() {
       const user = auth.currentUser;
-      if (!user) return;
+      if (!user) {
+        console.log('No user logged in');
+        return;
+      }
 
       try {
-        const snap = await getDocs(collection(db, 'users', user.uid, 'logs'));
-        let workouts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        console.log('Loading workouts for user:', user.uid);
+        const logsCollection = collection(db, 'users', user.uid, 'logs');
+        const snap = await getDocs(logsCollection);
+        
+        console.log('Found', snap.size, 'documents');
+        
+        let workouts = [];
+        snap.forEach((doc) => {
+          const data = doc.data();
+          console.log('Workout data:', doc.id, data);
+          workouts.push({ id: doc.id, ...data });
+        });
         
         // Filter
-        const searchTerm = document.getElementById('search').value.toLowerCase();
+        const searchTerm = (document.getElementById('search')?.value || '').toLowerCase();
         if (searchTerm) {
           workouts = workouts.filter(w => 
             (w.focus || '').toLowerCase().includes(searchTerm) ||
@@ -491,7 +848,7 @@
         }
         
         // Sort
-        const sortBy = document.getElementById('sort').value;
+        const sortBy = document.getElementById('sort')?.value || 'date_desc';
         workouts.sort((a, b) => {
           switch(sortBy) {
             case 'date_asc': return (a.date || '').localeCompare(b.date || '');
@@ -501,40 +858,45 @@
           }
         });
         
+        console.log('Rendering', workouts.length, 'workouts');
         renderWorkouts(workouts);
         updateStats(workouts);
-        window.workoutsData = workouts; // For export
+        window.workoutsData = workouts;
+        
       } catch (error) {
+        console.error('Error loading workouts:', error);
         showAlert('Error loading workouts: ' + error.message);
       }
     }
 
     function renderWorkouts(workouts) {
       if (!workouts.length) {
-        logList.innerHTML = '<div class="text-center text-gray-500 py-8">No workouts yet. Time to get started! 💪</div>';
+        elements.logList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-emoji">💪</div>
+            <div>No workouts yet. Time to get started!</div>
+          </div>
+        `;
         return;
       }
       
-      logList.innerHTML = workouts.map(workout => {
+      elements.logList.innerHTML = workouts.map(workout => {
         const exercisesSummary = (workout.exercises || [])
           .map(ex => `${ex.name} ${ex.s1}${ex.s2 ? `/${ex.s2}` : ''}${ex.s3 ? `/${ex.s3}` : ''}`)
           .join(', ');
           
         return `
-          <div class="border border-gray-200 p-4 space-y-2">
-            <div class="flex items-start justify-between">
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="font-medium">${workout.focus || 'Workout'}</span>
-                  <span class="text-sm text-gray-500">${workout.date || ''}</span>
-                </div>
-                ${exercisesSummary ? `<div class="text-sm text-gray-700">${exercisesSummary}</div>` : ''}
-                ${workout.duration ? `<div class="text-xs text-gray-500">${workout.duration}min • Intensity ${workout.intensity}/10</div>` : ''}
-                ${workout.notes ? `<div class="text-sm italic text-gray-600 mt-1">${workout.notes}</div>` : ''}
+          <div class="workout-item">
+            <div class="workout-header">
+              <div>
+                <div class="workout-title">${workout.focus || 'Workout'} • <span class="workout-date">${workout.date || ''}</span></div>
+                ${exercisesSummary ? `<div class="workout-exercises">${exercisesSummary}</div>` : ''}
+                ${workout.duration || workout.intensity ? `<div class="workout-meta">${workout.duration ? `${workout.duration} min` : ''} ${workout.duration && workout.intensity ? ' • ' : ''} ${workout.intensity ? `Intensity ${workout.intensity}/10` : ''}</div>` : ''}
+                ${workout.notes ? `<div class="workout-notes">${workout.notes}</div>` : ''}
               </div>
-              <div class="flex gap-1 ml-2">
-                <button class="btn-secondary text-xs px-2 py-1" onclick="editWorkout('${workout.id}')">Edit</button>
-                <button class="btn-secondary text-xs px-2 py-1" onclick="deleteWorkout('${workout.id}')">×</button>
+              <div class="workout-actions">
+                <button class="btn btn-secondary btn-small" onclick="editWorkout('${workout.id}')">Edit</button>
+                <button class="btn btn-secondary btn-small" onclick="deleteWorkout('${workout.id}')">×</button>
               </div>
             </div>
           </div>
@@ -581,15 +943,16 @@
       document.getElementById('date').value = workout.date || '';
       document.getElementById('focus').value = workout.focus || 'Other';
       document.getElementById('duration').value = workout.duration || '';
-      document.getElementById('intensity').value = workout.intensity || 5;
+      elements.intensity.value = workout.intensity || 5;
+      elements.intensityValue.textContent = workout.intensity || 5;
       document.getElementById('notes').value = workout.notes || '';
       
       document.getElementById('formTitle').textContent = 'Edit Workout';
       document.getElementById('saveBtnText').textContent = 'Update Workout';
       
-      exercisesEl.innerHTML = '';
+      elements.exercises.innerHTML = '';
       (workout.exercises || []).forEach(ex => {
-        exercisesEl.appendChild(createExerciseRow(ex));
+        elements.exercises.appendChild(createExerciseRow(ex));
       });
       
       window.scrollTo({ top: 0, behavior: 'smooth' });
